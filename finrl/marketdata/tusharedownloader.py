@@ -6,10 +6,9 @@ import pandas as pd
 import tushare as ts
 from tqdm import tqdm
 
-class tushareDownloader:
+class TushareDownloader :
     """Provides methods for retrieving daily stock data from
     tushare API
-
     Attributes
     ----------
         start_date : str
@@ -18,12 +17,24 @@ class tushareDownloader:
             end date of the data (modified from config.py)
         ticker_list : list
             a list of stock tickers (modified from config.py)
-
     Methods
     -------
     fetch_data()
         Fetches data from tushare API
-
+    date：日期
+    open：开盘价
+    high：最高价
+    close：收盘价
+    low：最低价
+    volume：成交量
+    price_change：价格变动
+    p_change：涨跌幅
+    ma5：5日均价
+    ma10：10日均价
+    ma20:20日均价
+    v_ma5:5日均量
+    v_ma10:10日均量
+    v_ma20:20日均量
     """
 
     def __init__(self, start_date: str, end_date: str, ticker_list: list):
@@ -36,7 +47,6 @@ class tushareDownloader:
         """Fetches data from Yahoo API
         Parameters
         ----------
-
         Returns
         -------
         `pd.DataFrame`
@@ -50,31 +60,9 @@ class tushareDownloader:
             temp_df["tic"] = tic
             data_df = data_df.append(temp_df)
         data_df = data_df.reset_index(level="date")
-        try:
-            # convert the column names to standardized names
-            data_df.columns = [
-                "date",
-                "open",
-                "high",
-                "low",
-                "close",
-                "volume",
-                "price_change",
-                "p_change",
-                "ma5",
-                "ma10",
-                "ma20",
-                "v_ma5",
-                "v_ma10",
-                "v_ma20",
-                "turnover",
-                "tic"
-            ]
-            data_df = data_df.drop(["price_change","p_change","ma5","ma10","ma20","v_ma5","v_ma10","v_ma20"], 1)
-        except NotImplementedError:
-            print("the features are not supported currently")
+
         # create day of the week column (monday = 0)
-        
+        data_df = data_df.drop(["price_change","p_change","ma5","ma10","ma20","v_ma5","v_ma10","v_ma20"], 1)
         data_df["day"] =  pd.to_datetime(data_df["date"]).dt.dayofweek
         #rank desc
         data_df = data_df.sort_index(axis=0,ascending=False)
@@ -86,9 +74,8 @@ class tushareDownloader:
         data_df = data_df.dropna()
         print("Shape of DataFrame: ", data_df.shape)
         # print("Display DataFrame: ", data_df.head())
-
+        print(data_df)
         data_df = data_df.sort_values(by=['date','tic']).reset_index(drop=True)
-
         return data_df
 
     def select_equal_rows_stock(self, df):
