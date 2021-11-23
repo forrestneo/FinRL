@@ -21,20 +21,20 @@ class TushareDownloader :
     -------
     fetch_data()
         Fetches data from tushare API
-    date：日期
-    open：开盘价
-    high：最高价
-    close：收盘价
-    low：最低价
-    volume：成交量
-    price_change：价格变动
-    p_change：涨跌幅
-    ma5：5日均价
-    ma10：10日均价
-    ma20:20日均价
-    v_ma5:5日均量
-    v_ma10:10日均量
-    v_ma20:20日均量
+    date：date
+    Open: opening price
+    High: the highest price
+    Close: closing price
+    Low: lowest price
+    Volume: volume
+    Price_change: price change
+    P_change: fluctuation
+    ma5: 5-day average price
+    Ma10: 10 average daily price
+    Ma20:20 average daily price
+    V_ma5:5 daily average
+    V_ma10:10 daily average
+    V_ma20:20 daily average
     """
 
     def __init__(self, start_date: str, end_date: str, ticker_list: list):
@@ -42,7 +42,7 @@ class TushareDownloader :
         self.start_date = start_date
         self.end_date = end_date
         self.ticker_list = ticker_list
-        
+
     def fetch_data(self) -> pd.DataFrame:
         """Fetches data from Yahoo API
         Parameters
@@ -56,8 +56,8 @@ class TushareDownloader :
         # Download and save the data in a pandas DataFrame:
         data_df = pd.DataFrame()
         for tic in  tqdm(self.ticker_list, total=len(self.ticker_list)):
-            temp_df = ts.get_hist_data(tic,start=self.start_date,end=self.end_date)
-            temp_df["tic"] = tic
+            temp_df = ts.get_hist_data(tic[0:6],start=self.start_date,end=self.end_date)
+            temp_df["tic"] = tic[0:6]
             data_df = data_df.append(temp_df)
         data_df = data_df.reset_index(level="date")
 
